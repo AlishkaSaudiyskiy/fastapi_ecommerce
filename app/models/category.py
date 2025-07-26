@@ -1,6 +1,7 @@
 from app.backend.db import Base
 from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import relationship
+from app.models import *
 
 
 class Category(Base):
@@ -10,3 +11,4 @@ class Category(Base):
     name = Column(String)
     slug = Column(String, unique=True, index=True)
     is_active = Column(Boolean, default=True)
+    products = relationship("Product", back_populates="category")
