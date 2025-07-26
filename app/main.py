@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from app.routers.category import router as router_category
+from app.routers.products import router as router_products
 
 app = FastAPI()
 app.include_router(router_category)
+app.include_router(router_products)
 
 
 @app.get("/")
