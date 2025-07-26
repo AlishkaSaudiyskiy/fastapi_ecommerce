@@ -1,7 +1,6 @@
 from app.backend.db import Base
 from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, Float
 from sqlalchemy.orm import relationship
-from app.models.category import Category
 
 
 class Product(Base):
@@ -17,4 +16,5 @@ class Product(Base):
     category_id = Column(Integer, ForeignKey('categories.id'))
     rating = Column(Float)
     is_active = Column(Boolean, default=True)
+    
     category = relationship("Category", back_populates='products')
