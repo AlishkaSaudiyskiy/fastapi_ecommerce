@@ -1,20 +1,22 @@
 from fastapi import APIRouter, Depends, status, HTTPException
-from sqlalchemy.orm import Session
-from app.backend.db_depends import get_db
-from typing import Annotated
 
-from app.models import *
-from sqlalchemy import insert
-from app.schemas import CreateCategory
+from sqlalchemy import insert, select
+from sqlalchemy.orm import Session
 
 from slugify import slugify
+
+from app.models import *
+from app.backend.db_depends import get_db
+from app.schemas import CreateCategory
+from typing import Annotated
 
 router = APIRouter(prefix="/category", tags=["category"])
 
 
-@router.get("/all_categories")
-async def get_all_categories():
-    pass
+@router.get('/all_categories')
+async def get_all_categories(db: Annotated[Session, Depends(get_db)]):
+    categories = db.scalars(select(Category).where(Category.is_active == True)).all()
+    return categories
 
 
 @router.post('/create')
