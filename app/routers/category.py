@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, update, delete
 from sqlalchemy.orm import Session
 
 from slugify import slugify
@@ -40,5 +40,6 @@ async def update_category():
 
 
 @router.delete('/delete')
-async def delete_category():
-    pass
+async def delete_category(db: Annotated[Session, Depends(get_db)], category_id: int):
+    db.execute(delete(Category).where(Category.id == category_id))
+    db.commit()
