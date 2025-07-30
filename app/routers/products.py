@@ -70,8 +70,27 @@ async def product_detail(db: Annotated[Session, Depends(get_db)], product_slug: 
 
 
 @router.put('/detail/{product_slug}')
-async def update_product(product_slug: str):
-    pass
+async def update_product(db: Annotated[Session, Depends(get_db)], product_slug: str, update_product: CreateProduct):
+    product = db.scalar(select(Product).where(Product.slug == product_slug))
+    if product is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="There are no product"
+        )
+    db.execute(update(Product).where(Product.slug == product_slug).values(
+        name=update_product.name,
+        slug=slugify(update_product.name),
+        description=update_product.description,
+        price=update_product.price,
+        image_url=update_product.image_url,
+        stock=update_product.stock,
+        category_id=update_product.category
+    ))
+    db.commit()
+    return {
+        'status_code': status.HTTP_200_OK,
+        'transaction': 'Product update is successful'
+    }
 
 
 @router.delete('/delete')
