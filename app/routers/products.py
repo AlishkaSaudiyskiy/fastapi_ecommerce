@@ -22,7 +22,21 @@ async def all_products(db: Annotated[Session, Depends(get_db)]):
 
 @router.post('/create')
 async def create_product(db: Annotated[Session, Depends(get_db)], create_product: CreateProduct):
-    pass
+    db.execute(insert(Product).values(
+        name=create_product.name,
+        slug=slugify(create_product.name),
+        description=create_product.description,
+        price=create_product.price,
+        image_url=create_product.image_url,
+        stock=create_product.stock,
+        category_id=create_product.category,
+        rating=0.0
+    ))
+    db.commit()
+    return {
+        'status_code': status.HTTP_201_CREATED,
+        'transaction': 'Successful'
+    }
 
 
 @router.get('/{category_slug}')
