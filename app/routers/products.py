@@ -59,8 +59,14 @@ async def product_by_category(db: Annotated[Session, Depends(get_db)], category_
 
 
 @router.get('/detail/{product_slug}')
-async def product_detail(product_slug: str):
-    pass
+async def product_detail(db: Annotated[Session, Depends(get_db)], product_slug: str):
+    product = db.scalar(select(Product).where(Product.slug == product_slug))
+    if product is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="There are no product"
+        )
+    return product
 
 
 @router.put('/detail/{product_slug}')
