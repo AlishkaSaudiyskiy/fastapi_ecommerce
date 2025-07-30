@@ -94,5 +94,10 @@ async def update_product(db: Annotated[Session, Depends(get_db)], product_slug: 
 
 
 @router.delete('/delete')
-async def delete_product(product_id: int):
-    pass
+async def delete_product(db: Annotated[Session, Depends(get_db)], product_id: int):
+    db.execute(delete(Product).where(Product.id == product_id))
+    db.commit()
+    return {
+        'status_code': status.HTTP_200_OK,
+        'transaction': 'Product delete is successful'
+    } 
